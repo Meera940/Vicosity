@@ -3,22 +3,21 @@
 
 <b>Discipline | <b>Information Technology
 :--|:--|
-<b> Lab | <b> Fill your lab name here
-<b> Experiment|     <b> Fill your experiment name and number here
+<b> Lab | <b> Virtual Lab
+<b> Experiment|     <b> Project 64: Create a VR model to determine the wavelength of He-Ne laser light using single slit diffraction.
 
 ### About the Experiment 
 
 Fill a brief description of this experiment here
 
-<b>Name of Developer | <b> Fill the name of experiment owner here 
+<b>Name of Developer | <b> Meera 
 :--|:--|
-<b> Institute | <b>  
-<b> Email id|     <b>  
-<b> Department |  
+<b> Institute |Rajkiya Engineering College Banda <b>  
+<b> Email id| 2407340130036@recbanda.ac.in    <b>  
+<b> Department | Information Technology  
 
 ### Contributors List
 
 SrNo | Name | Faculty or Student | Department| Institute | Email id
 :--|:--|:--|:--|:--|:--|
-1 | . | . | . | . | .
-2 | . | . | . | . | .
+1 | Meera. |Dr. Ashutosh Tiwari . |Information Technology  . |Rajkiya Engineering College Banda  . | 2407340130036@recbanda.ac.in 
