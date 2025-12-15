@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Single Slit Diffraction - HeNe Laser (VR)</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+  </style>
+</head>
+<body>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.155/build/three.module.js';
+import { VRButton } from 'https://cdn.jsdelivr.net/npm/three@0.155/examples/jsm/webxr/VRButton.js';
+
+let scene, camera, renderer;
+let screenMesh;
+
+const wavelength = 632.8e-9; // He-Ne wavelength (m)
+let slitWidth = 50e-6;       // 50 micrometers
+let screenDistance = 2;     // meters
+
+init();
+animate();
+
+function init() {
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x000000);
+
+  camera = new THREE.PerspectiveCamera(70, window.innerWidth/window.innerHeight, 0.1, 100);
+  camera.position.set(0, 1.6, 3);
+
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.xr.enabled = true;
+  document.body.appendChild(renderer.domElement);
+  document.body.appendChild(VRButton.createButton(renderer));
+
+  // Light
+  scene.add(new THREE.AmbientLight(0xffffff, 1));
+
+  // Laser source
+  const laser = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.01, 0.01, 0.5),
+    new THREE.MeshBasicMaterial({ color: 0xff0000 })
+  );
+  laser.rotation.x = Math.PI / 2;
+  laser.position.z = -1;
+  scene.add(laser);
+
+  // Slit
+  const slit = new THREE.Mesh(
+    new THREE.BoxGeometry(0.2, 0.002, 0.02),
+    new THREE.MeshBasicMaterial({ color: 0xffffff })
+  );
+  slit.position.z = 0;
+  scene.add(slit);
+
+  // Screen
+  const geometry = new THREE.PlaneGeometry(2, 2, 200, 200);
+  const material = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
+  screenMesh = new THREE.Mesh(geometry, material);
+  screenMesh.position.z = screenDistance;
+  scene.add(screenMesh);
+
+  updateDiffraction();
+}
+
+function updateDiffraction() {
+  const positions = screenMesh.geometry.attributes.position;
+  const colors = [];
+
+  for (let i = 0; i < positions.count; i++) {
+    const y = positions.getY(i);
+    const theta = Math.atan(y / screenDistance);
+    const beta = Math.PI * slitWidth * Math.sin(theta) / wavelength;
+
+    let intensity = 1;
+    if (beta !== 0) {
+      intensity = Math.pow(Math.sin(beta) / beta, 2);
+    }
+
+    colors.push(intensity, 0, 0); // red diffraction pattern
+  }
+
+  screenMesh.geometry.setAttribute(
+    'color',
+    new THREE.Float32BufferAttribute(colors, 3)
+  );
+  screenMesh.material.vertexColors = true;
+}
+
+function animate() {
+  renderer.setAnimationLoop(() => {
+    renderer.render(scene, camera);
+  });
+}
+
+window.addEventListener('resize', () => {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+});
+</script>
+</body>
+</html>
